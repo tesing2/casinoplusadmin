@@ -1,2 +1,70 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Casino Plus Dashboard</title><style>body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#fff}*{box-sizing:border-box}.wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.side{background:#111827;padding:20px}.side h2{color:#38bdf8}.side a{display:block;color:#cbd5e1;padding:10px 0;text-decoration:none}.main{padding:20px}.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:20px 0}.card,.panel{background:#1e293b;border-radius:16px;padding:16px}.chat{max-height:420px;overflow:auto;display:flex;flex-direction:column;gap:10px}.msg{padding:10px 12px;border-radius:14px;max-width:80%}.left{background:#334155;align-self:flex-start}.right{background:#2563eb;align-self:flex-end}.input{display:flex;gap:10px;margin-top:12px}.input input{flex:1;padding:10px;border-radius:10px;border:none}.input button{padding:10px 14px;border:none;border-radius:10px}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:10px;border-bottom:1px solid #334155;text-align:left}@media(max-width:800px){.wrap{grid-template-columns:1fr}.side{display:flex;gap:14px;overflow:auto}.side a{white-space:nowrap}.layout2{grid-template-columns:1fr!important}}</style></head><body><div class='wrap'><div class='side'><h2>CashFlow</h2><a href='#' onclick="showTab('dashboard')">Dashboard</a><a href='#' onclick="showTab('cashin')">Cash In</a><a href='#' onclick="showTab('cashout')">Cash Out</a><a href='#' onclick="showTab('chats')">Chats</a></div><div class='main'><div id='dashboard' class='tab'><div class='top'><h1>Dashboard</h1><div id='clock'></div></div><div class='grid'><div class='card'><small>Today's Cash In</small><h2>₱100</h2></div><div class='card'><small>Today's Cash Out</small><h2>₱9,870</h2></div><div class='card'><small>Transactions</small><h2>1</h2></div></div><div class='grid layout2' style='grid-template-columns:1.2fr .8fr'><div class='panel'><h3>Recent Transactions</h3><table class='table'><tr><th>ID</th><th>User</th><th>Amount</th></tr><tr><td>#1021</td><td>Player24</td><td>₱100</td></tr></table></div><div class='panel'><h3>Support Chats</h3><div class='chat' id='chat'><div class='msg left'>Hello pa cash in po ₱500</div><div class='msg right'>Processing now sir</div><div class='msg left'>Received salamat</div><div class='msg left'>Pa cash out ₱1200</div><div class='msg right'>Queued kindly wait 2 mins</div></div><div class='input'><input id='txt' placeholder='Type message'><button onclick='sendMsg()'>Send</button></div></div></div><div id='cashin' class='tab' style='display:none'><div class='panel'><h2>Cash In Requests</h2><p>Player24 sent ₱100</p><button onclick="alert('Approved')">Approve</button></div></div><div id='cashout' class='tab' style='display:none'><div class='panel'><h2>Cash Out Queue</h2><p>No pending cash out</p></div></div><div id='chats' class='tab' style='display:none'><div class='panel'><h2>Support Chats</h2><p>Use dashboard chat panel or wait for new chats.</p></div></div></div></div><script>function showTab(id){document.querySelectorAll('.tab').forEach(t=>t.style.display='none');document.getElementById(id).style.display='block';}function tick(){document.getElementById('clock').textContent=new Date().toLocaleString()}setInterval(tick,1000);tick();function sendMsg(){let t=document.getElementById('txt');if(!t.value.trim())return;let d=document.createElement('div');d.className='msg right';d.textContent=t.value;document.getElementById('chat').appendChild(d);t.value='';document.getElementById('chat').scrollTop=99999;setTimeout(()=>{let r=document.createElement('div');r.className='msg left';const replies=['Received processing now','Cash in confirmed','Queued kindly wait','Transaction successful','Checking payment now'];r.textContent=replies[Math.floor(Math.random()*replies.length)];document.getElementById('chat').appendChild(r);document.getElementById('chat').scrollTop=99999;},700)}</script></body></html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cash In / Cash Out Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#fff}header{padding:20px;text-align:center;background:#111827;font-size:28px;font-weight:bold}.wrap{max-width:1100px;margin:auto;padding:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}.card{background:#1e293b;padding:18px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.25)}h3{margin:0 0 10px}input,select,button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:10px;font-size:15px}input,select{background:#e5e7eb;color:#111}button{background:#22c55e;color:#fff;font-weight:bold;cursor:pointer}button:hover{opacity:.9}table{width:100%;border-collapse:collapse;margin-top:15px}th,td{padding:10px;text-align:left;border-bottom:1px solid #334155}.red{color:#f87171}.green{color:#4ade80}@media(max-width:600px){header{font-size:22px}}
+</style>
+</head>
+<body>
+<header>Player Cash Dashboard</header>
+<div class="wrap">
+<div class="grid">
+<div class="card"><h3>Total Players</h3><div id="playersCount">3</div></div>
+<div class="card"><h3>Total Balance</h3><div id="totalBalance">₱0</div></div>
+<div class="card"><h3>Cash In Today</h3><div id="cashInTotal" class="green">₱0</div></div>
+<div class="card"><h3>Cash Out Today</h3><div id="cashOutTotal" class="red">₱0</div></div>
+</div>
+
+<div class="grid" style="margin-top:20px">
+<div class="card">
+<h3>Transaction</h3>
+<select id="player"></select>
+<select id="type">
+<option value="cashin">Cash In</option>
+<option value="cashout">Cash Out</option>
+</select>
+<input type="number" id="amount" placeholder="Enter amount">
+<button onclick="submitTx()">Submit</button>
+</div>
+<div class="card">
+<h3>Player Balances</h3>
+<div id="balances"></div>
+</div>
+</div>
+
+<div class="card" style="margin-top:20px">
+<h3>Transaction History</h3>
+<table>
+<thead><tr><th>Player</th><th>Type</th><th>Amount</th><th>Time</th></tr></thead>
+<tbody id="history"></tbody>
+</table>
+</div>
+</div>
+<script>
+let players=[{id:1,name:'Alex',balance:500},{id:2,name:'Mia',balance:1200},{id:3,name:'Jay',balance:300}];
+let logs=[];
+function peso(n){return '₱'+n.toLocaleString();}
+function render(){
+player.innerHTML=players.map(p=>`<option value='${p.id}'>${p.name}</option>`).join('');
+playersCount.textContent=players.length;
+let total=players.reduce((a,b)=>a+b.balance,0); totalBalance.textContent=peso(total);
+balances.innerHTML=players.map(p=>`<p>${p.name}: <b>${peso(p.balance)}</b></p>`).join('');
+history.innerHTML=logs.map(l=>`<tr><td>${l.name}</td><td class='${l.type==='cashin'?'green':'red'}'>${l.type}</td><td>${peso(l.amount)}</td><td>${l.time}</td></tr>`).join('');
+cashInTotal.textContent=peso(logs.filter(x=>x.type==='cashin').reduce((a,b)=>a+b.amount,0));
+cashOutTotal.textContent=peso(logs.filter(x=>x.type==='cashout').reduce((a,b)=>a+b.amount,0));
+}
+function submitTx(){
+let id=+player.value; let type=typeSel=document.getElementById('type').value; let amt=+amount.value;
+if(!amt||amt<=0)return alert('Enter valid amount');
+let p=players.find(x=>x.id===id);
+if(type==='cashin')p.balance+=amt; else {if(p.balance<amt)return alert('Insufficient balance'); p.balance-=amt;}
+logs.unshift({name:p.name,type,amount:amt,time:new Date().toLocaleString()});
+amount.value=''; render();
+}
+render();
+</script>
+</body>
+</html>
